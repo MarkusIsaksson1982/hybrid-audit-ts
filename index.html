@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>ad-audit-mini</title>
+<title>hybrid-audit-ts</title>
 <style>
   :root { color-scheme: light dark; --bg: #0f1419; --fg: #e7ecf1; --muted: #9aa7b2; --card: #1a222b; --high: #e35d6a; --medium: #e0a44a; --low: #5bbf8a; --border: #2b3642; }
   body { margin: 0; font: 15px/1.5 system-ui, sans-serif; background: var(--bg); color: var(--fg); }
@@ -24,8 +24,9 @@
 </head>
 <body>
 <main>
-  <h1>ad-audit-mini</h1>
-  <p class="lead">Typed rule engine plus validated multi-provider LLM findings into one deduplicated action list, written in strict TypeScript.</p>
+  <h1>hybrid-audit-ts</h1>
+  <p class="lead">Deterministic rules first, LLM findings second: output from several providers is validated and merged with rule findings into one deduplicated action list. Strict TypeScript. Two sample domains: ad campaigns and software licenses.</p>
+  <h2 style="font-size:1.1rem">Domain 1: ad campaigns</h2>
   <div class="meta" id="meta" aria-live="polite">Loading sample data…</div>
   <table>
     <thead>
@@ -33,7 +34,21 @@
     </thead>
     <tbody id="rows"></tbody>
   </table>
+  <h2 style="font-size:1.1rem;margin-top:2rem">Domain 2: software licenses (same pipeline, different rules)</h2>
+  <div class="meta" id="lmeta">Loading…</div>
+  <table><thead><tr><th scope="col">License</th><th scope="col">Action</th><th scope="col">Severity</th><th scope="col">Sources</th><th scope="col">Reasons</th></tr></thead><tbody id="lrows"></tbody></table>
 </main>
+<script type="module">
+import { evaluateLicenses } from './dist/src/licenses.js';
+import { jsonArrayAdapter, parseLlmFindings, dedupeActions } from './dist/src/actions.js';
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const d = await fetch('./data/licenses.json').then((r) => r.json());
+let all = evaluateLicenses(d.licenses, { today: d.today }); const dropped = [];
+for (const o of d.llmOutputs) { const r = parseLlmFindings(o.text, jsonArrayAdapter(o.provider)); all = all.concat(r.findings); dropped.push(`${o.provider}: ${r.dropped} dropped`); }
+const acts = dedupeActions(all);
+document.getElementById('lmeta').textContent = `${acts.length} actions · ${dropped.join(' · ')}`;
+document.getElementById('lrows').innerHTML = acts.map((a) => `<tr><td>${esc(a.entityId)}</td><td>${esc(a.action)}</td><td><span class="badge ${a.severity}">${a.severity}</span></td><td>${esc(a.sources.join(', '))}</td><td>${esc(a.reasons.join('; '))}</td></tr>`).join('');
+</script>
 <script type="module">
 import { evaluateRules } from './dist/src/rules.js';
 import { jsonArrayAdapter, parseLlmFindings, dedupeActions } from './dist/src/actions.js';

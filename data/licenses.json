@@ -1,0 +1,7 @@
+{"today":"2026-10-13","licenses":[
+ {"id":"lic-design","product":"Design suite","seats":120,"assigned":118,"inactive90d":31,"costPerSeat":540,"renewal":"2026-11-02"},
+ {"id":"lic-crm","product":"CRM","seats":60,"assigned":64,"inactive90d":2,"costPerSeat":900,"renewal":"2027-04-01"},
+ {"id":"lic-pdf","product":"PDF editor","seats":300,"assigned":140,"inactive90d":45,"costPerSeat":60,"renewal":"2027-01-15"},
+ {"id":"lic-ide","product":"IDE","seats":40,"assigned":40,"inactive90d":0,"costPerSeat":250,"renewal":"2027-06-30"}],
+ "llmOutputs":[{"provider":"local-llm","text":"```json\n[{\"entityId\":\"lic-pdf\",\"action\":\"reclaim_seats\",\"severity\":\"high\",\"reason\":\"205 idle seats across departments\"},{\"entityId\":\"lic-ide\",\"action\":\"cancel\",\"severity\":\"maybe\"}]\n```"},
+  {"provider":"hosted-llm","text":"{\"findings\":[{\"entityId\":\"lic-crm\",\"action\":\"true_up_or_reclaim\",\"severity\":\"high\",\"reason\":\"4 seats over contract\"}]}"}]}

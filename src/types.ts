@@ -1,4 +1,4 @@
-/** Shared contract for ad-audit-mini (fixed; model-written modules must satisfy it under `strict`). */
+/** Shared contract for hybrid-audit-ts (fixed; model-written modules must satisfy it under `strict`). */
 export type Severity = 'high' | 'medium' | 'low';
 export const SEVERITY_RANK: Record<Severity, number> = { high: 3, medium: 2, low: 1 };
 export type CampaignStatus = 'active' | 'paused' | 'limited_by_budget';

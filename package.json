@@ -1,9 +1,9 @@
 {
-  "name": "ad-audit-mini",
+  "name": "hybrid-audit-ts",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Typed ad-audit rule engine + validated multi-provider LLM findings -> deduplicated actions (strict TypeScript)",
+  "description": "Deterministic rules + validated multi-provider LLM findings merged into deduplicated actions (strict TypeScript); ad-campaign and software-license examples",
   "scripts": {
     "build": "tsc -p .",
     "test": "tsc -p . && node --test dist/test/"

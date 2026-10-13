@@ -1,61 +1,48 @@
-# ad-audit-mini
+# hybrid-audit-ts
 
-**Live demo:** https://markusisaksson1982.github.io/showcases/ad-audit-mini/
+**Live demo:** https://markusisaksson1982.github.io/showcases/hybrid-audit-ts/
 
-Strict TypeScript, dependency-light demo for auditing e-commerce advertising.
+Strict TypeScript, dependency-light demo of a hybrid audit pipeline: **deterministic rules first, LLM findings second**.
+Output from several LLM providers is treated as untrusted input, validated with type guards, and merged with the rule
+findings into one prioritized, deduplicated action list (highest severity wins, every source is kept).
 
-## What it does
+The pipeline is domain-agnostic. Two example domains share the same contracts, adapters and dedupe:
 
-Typed contracts (`Campaign`, `Finding`, `Action`, `Rule`, `ProviderAdapter`) with a deterministic rule engine over sample ad-campaign data — low ROAS, budget-limited, disapproved products.
-
-A parser turns messy LLM output from several providers into validated findings, and a dedupe step merges rule and LLM findings into one prioritized action list — max severity, all sources kept.
-
-Pluggable typed rules and provider adapters. Compiled with `tsc --strict` and tested with `node --test`. A static HTML page renders the actions.
-
-Only dev dependencies: `typescript` + `@types/node`.
-
-## Why it relates to the Agentmama ad
-
-Agentmama audits e-commerce ads from Google Ads, Meta, Merchant Center, and GA, running data through a rule engine and LLM audit agents into one-click actions.
-
-This mini mirrors that core plumbing: rule evaluation + turning LLM output from multiple providers into reliable, deduplicated actions.
+- **Ad campaigns** (`src/rules.ts`): low ROAS, budget-limited campaigns, disapproved products.
+- **Software licenses** (`src/licenses.ts`): over-deployment, unused/inactive seats by wasted cost, renewals with seats to cut.
 
 ## Files
 
-- `src/types.ts` — shared contracts for campaigns, findings, actions, rules, adapters
-- `src/rules.ts` — deterministic audit rules
-- `src/actions.ts` — parser, validation, dedupe and prioritization
-- `test/*.test.ts` — tests for rules, parser, and dedupe
-- `data/sample.json` — sample campaigns
-- `index.html` — static renderer for the action list
+- `src/types.ts` – shared contracts (`Finding`, `Action`, `Rule`, `ProviderAdapter`, ...)
+- `src/rules.ts`, `src/licenses.ts` – deterministic rules per domain
+- `src/actions.ts` – provider adapters, validation, dedupe and prioritization
+- `test/*.test.ts` – `node:test` suites (rules, licenses, parsing, dedupe)
+- `data/sample.json`, `data/licenses.json` – sample data incl. messy LLM outputs
+- `index.html` – static page rendering both domains
 
-## How to run
+## Run
 
 ```bash
 npm install
-npm test
+npm test            # tsc --strict + node --test
+npm run build && python3 -m http.server   # then open http://localhost:8000/
 ```
 
-`npm test` = `tsc` + `node --test`.
-
-```bash
-npm run build
-python3 -m http.server
-```
-
-Then open `index.html`.
+Only dev dependencies: `typescript` and `@types/node`.
 
 ## Design notes
 
-- Strict types end-to-end, no `any` leaks.
-- LLM output treated as untrusted input and validated with type guards.
-- Pluggable rules and provider adapters.
-- Dedupe keeps every source.
+- Strict types end to end; no `any` in the validation path.
+- Use deterministic rules where the logic is known; use LLMs for the fuzzy part, and never trust their output unvalidated.
+- Pluggable rules and provider adapters (a new provider or domain is one small module).
 
-## Next steps
+## How it was built
 
-1. TypeScript: tRPC-style typed API + Zod-like runtime schemas for findings.
-2. TypeScript: Pub/Sub-style integration worker with retries, idempotency keys and a dead-letter list.
-3. TypeScript: provider cost/eval harness comparing LLM providers on the same audit.
+Built by Markus Isaksson's *night queue*: tasks are queued during the day, free/local models draft code overnight, a fixed
+TypeScript contract plus hidden tests and `tsc --strict` act as the acceptance gate, and Markus reviews in the morning.
+Send a task or feedback to **markusisaksson@mail.grokbot.com** (handled by his assistant Grok Bot) and watch it get built on.
+Formerly published as `ad-audit-mini`.
 
-Built by Markus Isaksson's night queue with Grok Bot.
+## License
+
+MIT
