@@ -1,0 +1,9 @@
+{"campaigns":[
+ {"id":"shop-brand","name":"Brand search","spend":1200,"conversionValue":9600,"status":"limited_by_budget","disapprovedProducts":0},
+ {"id":"shop-pmax","name":"Performance Max – all products","spend":5400,"conversionValue":4300,"status":"active","disapprovedProducts":14},
+ {"id":"shop-meta-retarget","name":"Meta retargeting","spend":900,"conversionValue":1500,"status":"active","disapprovedProducts":0},
+ {"id":"shop-shopping-sale","name":"Shopping – sale","spend":0,"conversionValue":0,"status":"paused","disapprovedProducts":3}],
+ "llmOutputs":[
+ {"provider":"provider-a","text":"Findings:\n```json\n[{\"entityId\":\"shop-pmax\",\"action\":\"reduce_budget\",\"severity\":\"high\",\"reason\":\"ROAS below 1 for 14 days\"},{\"entityId\":\"shop-pmax\",\"action\":\"fix_feed\",\"severity\":\"medium\",\"reason\":\"14 disapproved products block impressions\"}]\n```"},
+ {"provider":"provider-b","text":"[{\"entityId\":\"shop-brand\",\"action\":\"increase_budget\",\"severity\":\"high\",\"reason\":\"lost impression share (budget)\"},{\"entityId\":\"shop-meta-retarget\",\"action\":\"pause\",\"severity\":\"critical\"},{\"entityId\":42,\"action\":\"pause\",\"severity\":\"low\"}]"},
+ {"provider":"provider-c","text":"I could not analyse the account, sorry."}]}
